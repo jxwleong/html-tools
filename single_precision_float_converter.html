@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single Precision Float Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    input[type="button"] {
+      width: 48%;
+      padding: 10px;
+      margin-right: 2%;
+      margin-bottom: 5px;
+      box-sizing: border-box;
+    }
+    input[type="button"]:last-child {
+      margin-right: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div>
+  <h2>Single Precision Float Converter</h2>
+  <label for="floatInput">Enter 32-bit Float:</label>
+  <input type="text" id="floatInput">
+  <input type="button" value="Convert to Hex" onclick="convertToHex()">
+  <input type="button" value="Convert to Decimal" onclick="convertToDecimal()">
+  <p id="hexResult"></p>
+  <p id="decimalResult"></p>
+</div>
+
+<script>
+  function convertToHex() {
+    var floatValue = parseFloat(document.getElementById('floatInput').value);
+    if (!isNaN(floatValue)) {
+      var floatView = new DataView(new ArrayBuffer(4));
+      floatView.setFloat32(0, floatValue);
+      var hexValue = floatView.getUint32(0).toString(16).toUpperCase();
+      document.getElementById('hexResult').innerText = "Hexadecimal Value: 0x" + hexValue.padStart(8, '0');
+    } else {
+      document.getElementById('hexResult').innerText = "Invalid input. Please enter a valid floating-point number.";
+    }
+    document.getElementById('decimalResult').innerText = "";
+  }
+
+  function convertToDecimal() {
+    var hexValue = document.getElementById('floatInput').value.trim();
+    if (hexValue.substring(0, 2) === "0x") {
+      hexValue = hexValue.substring(2);
+    }
+    if (/^[0-9A-Fa-f]{1,8}$/.test(hexValue)) {
+      var floatView = new DataView(new ArrayBuffer(4));
+      floatView.setUint32(0, parseInt(hexValue, 16));
+      var floatValue = floatView.getFloat32(0);
+      document.getElementById('decimalResult').innerText = "Decimal Value: " + floatValue;
+    } else {
+      document.getElementById('decimalResult').innerText = "Invalid input. Please enter a valid hexadecimal number.";
+    }
+    document.getElementById('hexResult').innerText = "";
+  }
+</script>
+
+</body>
+</html>
