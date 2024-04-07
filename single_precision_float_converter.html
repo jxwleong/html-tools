@@ -35,9 +35,10 @@
 <body>
 
 <div>
-  <h2>Single Precision Float Converter</h2>
+  <h2>32 Bit Single Precision Float Converter</h2>
   <p>Largest number: 3.402823×10<sup>38</sup></p>
   <p>Smallest number: 1.175494×10<sup>-38</sup></p>
+  <img src="https://www.nextplatform.com/wp-content/uploads/2019/09/bfloat16-comparison-FP16-and-FP32.png" alt="Floating Point Register View">   <br>
   <label for="floatInput">Enter 32-bit Float:</label>
   <input type="text" id="floatInput">
   <input type="button" value="Convert to Hex" onclick="convertToHex()">
@@ -45,6 +46,11 @@
   <input type="button" value="Convert to Decimal" onclick="convertToDecimal()">
   -->
   <p id="hexResult"></p>
+  <p id="debug"></p>
+  <p id="binaryResult"></p>
+  <p id="signResult"></p>
+  <p id="exponentResult"></p>
+  <p id="mantissaResult"></p>
   <p id="decimalResult"></p>
 </div>
 
@@ -101,6 +107,30 @@
 </table>-->
 
 <script>
+  // Function to convert hexadecimal number to binary
+  function hexToBinary(hexValue) {
+    var binaryString = '';
+    for (var i = 0; i < hexValue.length; i++) {
+      var bin = parseInt(hexValue[i], 16).toString(2).padStart(4, '0');
+      binaryString += bin;
+    }
+    return binaryString;
+  }
+
+// Function to insert spaces after every 4 characters
+function insertSpaces(binaryString) {
+  var result = "";
+  var firstGroupSize = binaryString.length % 4;
+  if (firstGroupSize !== 0) {
+    //document.getElementById('debug').innerText= binaryString.substring(0, firstGroupSize);
+    result += binaryString.substring(0, firstGroupSize) + " ";
+  }
+  for (var i = firstGroupSize; i < binaryString.length; i += 4) {
+    result += binaryString.substr(i, 4) + " ";
+  }
+  return result.trim(); // Remove trailing space
+}
+
   function convertToHex() {
     var floatValue = parseFloat(document.getElementById('floatInput').value);
     if (!isNaN(floatValue)) {
@@ -108,7 +138,18 @@
       floatView.setFloat32(0, floatValue);
       var hexValue = floatView.getUint32(0).toString(16).toUpperCase();
       document.getElementById('hexResult').innerText = "Hexadecimal Value: 0x" + hexValue.padStart(8, '0');
-      fillFloatingPointNumber(hexValue); // Call fillFloatingPointNumber
+
+      var binaryValue = hexToBinary(hexValue); // Convert hex to binary
+      var binaryValueFormatted = insertSpaces(binaryValue);
+      // Extracting sign, exponent, and mantissa from the binary representation
+      var sign = insertSpaces(binaryValue[0]);
+      var exponent = insertSpaces(binaryValue.substring(1, 9));
+      var mantissa = insertSpaces(binaryValue.substring(9));
+
+      document.getElementById('binaryResult').innerText = "Binary Value: " + binaryValueFormatted;
+      document.getElementById('signResult').innerText = "Sign[31]: " + sign;
+      document.getElementById('exponentResult').innerText = "Exponent[30:23]: " + exponent;
+      document.getElementById('mantissaResult').innerText = "Mantissa[22:0]: " + mantissa;
     } else {
       document.getElementById('hexResult').innerText = "Invalid input. Please enter a valid floating-point number.";
     }
