@@ -24,19 +24,81 @@
     input[type="button"]:last-child {
       margin-right: 0;
     }
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
   </style>
 </head>
 <body>
 
 <div>
   <h2>Single Precision Float Converter</h2>
+  <p>Largest number: 3.402823×10<sup>38</sup></p>
+  <p>Smallest number: 1.175494×10<sup>-38</sup></p>
   <label for="floatInput">Enter 32-bit Float:</label>
   <input type="text" id="floatInput">
   <input type="button" value="Convert to Hex" onclick="convertToHex()">
+  <!--
   <input type="button" value="Convert to Decimal" onclick="convertToDecimal()">
+  -->
   <p id="hexResult"></p>
   <p id="decimalResult"></p>
 </div>
+
+<!--
+<table class="tg" style="margin-top: 20px;">
+    <thead>
+    <tr>
+        <th class="tg-0lax">S[31]</th>
+        <th class="tg-0lax" colspan="8">EXPONENT [30:23]</th>
+        <th class="tg-0lax" colspan="23">MANTISSA [22:0]</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        
+        <td id="s31" class="tg-0lax"></td>
+        
+       
+        <td id="exp30" class="tg-0lax"></td>
+        <td id="exp29" class="tg-0lax"></td>
+        <td id="exp28" class="tg-0lax"></td>
+        <td id="exp27" class="tg-0lax"></td>
+        <td id="exp26" class="tg-0lax"></td>
+        <td id="exp25" class="tg-0lax"></td>
+        <td id="exp24" class="tg-0lax"></td>
+        <td id="exp23" class="tg-0lax"></td>
+        
+        
+        <td id="mantissa22" class="tg-0lax"></td>
+        <td id="mantissa21" class="tg-0lax"></td>
+        <td id="mantissa20" class="tg-0lax"></td>
+        <td id="mantissa19" class="tg-0lax"></td>
+        <td id="mantissa18" class="tg-0lax"></td>
+        <td id="mantissa17" class="tg-0lax"></td>
+        <td id="mantissa16" class="tg-0lax"></td>
+        <td id="mantissa15" class="tg-0lax"></td>
+        <td id="mantissa14" class="tg-0lax"></td>
+        <td id="mantissa13" class="tg-0lax"></td>
+        <td id="mantissa12" class="tg-0lax"></td>
+        <td id="mantissa11" class="tg-0lax"></td>
+        <td id="mantissa10" class="tg-0lax"></td>
+        <td id="mantissa9" class="tg-0lax"></td>
+        <td id="mantissa8" class="tg-0lax"></td>
+        <td id="mantissa7" class="tg-0lax"></td>
+        <td id="mantissa6" class="tg-0lax"></td>
+        <td id="mantissa5" class="tg-0lax"></td>
+        <td id="mantissa4" class="tg-0lax"></td>
+        <td id="mantissa3" class="tg-0lax"></td>
+        <td id="mantissa2" class="tg-0lax"></td>
+        <td id="mantissa1" class="tg-0lax"></td>
+        <td id="mantissa0" class="tg-0lax"></td>
+    </tr>
+    </tbody>
+</table>-->
 
 <script>
   function convertToHex() {
@@ -46,6 +108,7 @@
       floatView.setFloat32(0, floatValue);
       var hexValue = floatView.getUint32(0).toString(16).toUpperCase();
       document.getElementById('hexResult').innerText = "Hexadecimal Value: 0x" + hexValue.padStart(8, '0');
+      fillFloatingPointNumber(hexValue); // Call fillFloatingPointNumber
     } else {
       document.getElementById('hexResult').innerText = "Invalid input. Please enter a valid floating-point number.";
     }
@@ -67,6 +130,25 @@
     }
     document.getElementById('hexResult').innerText = "";
   }
+
+  function fillFloatingPointNumber(hexValue) {
+    // Convert hexValue to binary representation
+    var floatBits = parseInt(hexValue, 16);
+
+    // Extracting sign bit
+    var sign = (floatBits >>> 31) & 1;
+    document.getElementById("s31").textContent = sign;
+
+    // Extracting exponent bits
+    for (var i = 0; i < 8; i++) {
+        document.getElementById("exp" + (30 - i)).textContent = (floatBits >>> (23 + i)) & 1;
+    }
+
+    // Extracting mantissa bits
+    for (var i = 0; i < 23; i++) {
+        document.getElementById("mantissa" + (22 - i)).textContent = (floatBits >>> i) & 1;
+    }
+}
 </script>
 
 </body>
