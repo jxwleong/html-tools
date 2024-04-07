@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fill Floating Point Number into Table</title>
+<style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+        font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+</head>
+<body>
+
+<table class="tg">
+    <thead>
+    <tr>
+        <th class="tg-0lax">S[31]</th>
+        <th class="tg-0lax" colspan="8">EXPONENT [30:23]</th>
+        <th class="tg-0lax" colspan="23">MANTISSA [22:0]</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <!-- Sign Bit (S[31]) -->
+        <td id="s31" class="tg-0lax"></td>
+        
+        <!-- Exponent Bits (EXPONENT [30:23]) -->
+        <td id="exp30" class="tg-0lax"></td>
+        <td id="exp29" class="tg-0lax"></td>
+        <td id="exp28" class="tg-0lax"></td>
+        <td id="exp27" class="tg-0lax"></td>
+        <td id="exp26" class="tg-0lax"></td>
+        <td id="exp25" class="tg-0lax"></td>
+        <td id="exp24" class="tg-0lax"></td>
+        <td id="exp23" class="tg-0lax"></td>
+        
+        <!-- Mantissa Bits (MANTISSA [22:0]) -->
+        <td id="mantissa22" class="tg-0lax"></td>
+        <td id="mantissa21" class="tg-0lax"></td>
+        <td id="mantissa20" class="tg-0lax"></td>
+        <td id="mantissa19" class="tg-0lax"></td>
+        <td id="mantissa18" class="tg-0lax"></td>
+        <td id="mantissa17" class="tg-0lax"></td>
+        <td id="mantissa16" class="tg-0lax"></td>
+        <td id="mantissa15" class="tg-0lax"></td>
+        <td id="mantissa14" class="tg-0lax"></td>
+        <td id="mantissa13" class="tg-0lax"></td>
+        <td id="mantissa12" class="tg-0lax"></td>
+        <td id="mantissa11" class="tg-0lax"></td>
+        <td id="mantissa10" class="tg-0lax"></td>
+        <td id="mantissa9" class="tg-0lax"></td>
+        <td id="mantissa8" class="tg-0lax"></td>
+        <td id="mantissa7" class="tg-0lax"></td>
+        <td id="mantissa6" class="tg-0lax"></td>
+        <td id="mantissa5" class="tg-0lax"></td>
+        <td id="mantissa4" class="tg-0lax"></td>
+        <td id="mantissa3" class="tg-0lax"></td>
+        <td id="mantissa2" class="tg-0lax"></td>
+        <td id="mantissa1" class="tg-0lax"></td>
+        <td id="mantissa0" class="tg-0lax"></td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+function fillFloatingPointNumber(floatNumber) {
+    // Convert floatNumber to binary representation
+    var floatBinary = (new Float32Array([floatNumber])).buffer;
+    var floatView = new DataView(floatBinary);
+    var floatBits = floatView.getUint32(0); // Get the bits representation
+
+    // Extracting sign bit
+    var sign = (floatBits >>> 31) & 1;
+    document.getElementById("s31").textContent = sign;
+
+    // Extracting exponent bits
+    for (var i = 0; i < 8; i++) {
+        document.getElementById("exp" + (30 - i)).textContent = (floatBits >>> (23 + i)) & 1;
+    }
+
+    // Extracting mantissa bits
+    for (var i = 0; i < 23; i++) {
+        document.getElementById("mantissa" + (22 - i)).textContent = (floatBits >>> i) & 1;
+    }
+}
+
+// Example usage:
+fillFloatingPointNumber(-1.0); // Fill the table with the binary representation of -1.0
+</script>
+
+</body>
+</html>
